@@ -110,7 +110,7 @@ public class Main {
         acctdef.put(holder1.getCustomerId(), String.valueOf(ira.getAccountNumber()));
 
         AccountHolder holder2 = new AccountHolder("Alan", "Turing", "", "", "", 00000);
-        Savings savings = new Savings(50, holder2.getName());
+        Savings savings = new Savings(50);
         holders.add(holder2);
         acctdef.put(holder2.getCustomerId(), String.valueOf(savings.getAccountNumber()));
 
@@ -222,8 +222,30 @@ public class Main {
         int option;
 
         System.out.println("What type of Savings Account would you like to open today?");
-        System.out.println("1. High Yield Savings Account");
-        System.out.println("2. Certificate of Deposit (CD) Account");
+        System.out.println("1. Standard Savings Account");
+        System.out.println("2. High Yield Savings Account");
+        System.out.println();
+        System.out.println("See account differences below to guide your selection.");
+        
+        //Create Array list to display Different Types of Checking Accounts.
+        ArrayList<String> savingsAccountInfo = new ArrayList<>();
+        savingsAccountInfo.add("Standard Savings Account Info");
+        savingsAccountInfo.add("$50 minimum deposit");
+        savingsAccountInfo.add("0.15% Annual Percentage Yield");
+        savingsAccountInfo.add("Monthly withdrawal/transfer limit is 9 per month");
+        savingsAccountInfo.add("$5.00 withdrawal fee");
+        savingsAccountInfo.add("");
+        savingsAccountInfo.add("High Yield Savings Account Info");
+        savingsAccountInfo.add("$500 minimum deposit");
+        savingsAccountInfo.add("0.40% Annual Percentage Yield");
+        savingsAccountInfo.add("Monthly withdrawal/transfer limit is 5 per month");
+        savingsAccountInfo.add("$5.00 withdrawal fee");
+        savingsAccountInfo.add("");
+
+        //Print Information on Checking Account
+        for (int i = 0; i < savingsAccountInfo.size(); i++) {
+			System.out.println(savingsAccountInfo.get(i));
+		}
 
         do {
             System.out.println("Select option from menu above...");
@@ -295,16 +317,43 @@ public class Main {
                     bankAccount = new PremiumChecking();
                 }
             }
+
+////////sicily modify this portion
         } else if (option == 2) { //Savings Account
-            //BUILD THIS OUT WHEN SAVINGS ACCOUNT HAS BEEN UPDATED
-            System.out.println("Savings Account created."); 
-         }
+            int suboption = savingsAccountMenu(userInput);
+            if (suboption == 1) { //Standard Savings
+                System.out.println ("Do you have an initial deposit? Y/N");
+                entry = in.nextLine();
+                if(entry.toLowerCase().equals("y")) {
+                    System.out.println("Please enter the amount you would like to deposit: ");
+                    initialDeposit = in.nextDouble();
+                    System.out.println();
+                    bankAccount = new Savings(initialDeposit);
+                }
+                else {
+                    bankAccount = new Savings();
+                }
+            } else { //High Yield Savings
+                System.out.println ("Do you have an initial deposit? Y/N");
+                entry = in.nextLine();
+                if(entry.toLowerCase().equals("y")) {
+                    System.out.println("Please enter the amount you would like to deposit: ");
+                    initialDeposit = in.nextDouble();
+                    System.out.println();
+                    bankAccount = new HighYield(initialDeposit);
+                }
+                else {
+                    bankAccount = new HighYield();
+                }
+            }
+        }
+//////////
          else { //IRA
             int suboption = iraAccountMenu(userInput);
             if (suboption == 1) { //Traditional
                 System.out.println("Please Enter your First Name: ");
                 entry = in.nextLine();
-                System.out.println("Please Enter your birthdate (MM/DD/YYYY): ");
+                System.out.println("Please Enter your birthdate (YYYY/MM/DD): ");
                 birthdate = in.nextLine();
                 System.out.println("Please Enter your Total Taxable Income: ");
                 taxAmount = in.nextInt();

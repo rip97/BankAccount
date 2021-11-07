@@ -13,18 +13,17 @@ public class HighYield extends Savings{
         System.out.println(toString());
     }
 
-    public HighYield(double initialDeposit, String accountHolder) {
+    public HighYield(double initialDeposit) {
         //super(initialDeposit);
         super();
 
-        if(initialDeposit > MinimumDeposit)
+        if(initialDeposit < MinimumDeposit)
         {
             System.out.println("\n The minimum deposit is $500.00, please try again!");
 
         }
         else
         {
-            this.accountHolder = accountHolder;
             balance += initialDeposit;
             System.out.println("\nCongratulations on your new Account!!");
             System.out.println(toString());

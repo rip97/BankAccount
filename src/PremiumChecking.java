@@ -4,7 +4,7 @@ and No Transaction Fees.
 */
 class PremiumChecking extends Checking {
 
-	private static final double OVERDRAFT_FEE = 35.00;
+	private static final double OVERDRAFT_FEE = 35;
 	private static final double withdrawalLimit = 500.00;
 	private static final double transactionFee = 0.00;
 
@@ -53,15 +53,15 @@ class PremiumChecking extends Checking {
 				System.out.printf("Declined. This is above your daily withdrawal limit of: $%.2f%n", withdrawalLimit);
 			} else {
 				if((amount + transactionFee) >= balance) {
-					System.out.printf("NOTE: This transaction will result in an overdraft fee of: $%.2f%n" + OVERDRAFT_FEE);
-					balance -= amount;
+					System.out.println("NOTE: This transaction will result in an overdraft fee of: " + OVERDRAFT_FEE);
+					balance = (balance - amount) - transactionFee;
 					balance -= OVERDRAFT_FEE;
-					balance -= transactionFee;
 	
 					System.out.printf("Withdrawal Amount: $%.2f%n", amount);
 					System.out.printf("Transaction Fee: %.2f%n", transactionFee);
 					System.out.printf("Your Account balance: $%.2f%n", balance);
 				} else {
+					balance = (balance - amount) - transactionFee;
 					System.out.printf("Withdrawal Amount: $%.2f%n", amount);
 					System.out.printf("Transaction Fee: %.2f%n", transactionFee);
 					System.out.printf("Your Account balance: $%.2f%n", balance);			

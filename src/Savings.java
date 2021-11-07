@@ -13,18 +13,17 @@ public class Savings extends BankAccount{
     System.out.println(toString());
   }
 
-  public Savings(double initialDeposit, String accountHolder) {
+  public Savings(double initialDeposit) {
     //super(initialDeposit);
     super();
 
-    if(initialDeposit > MinimumDeposit)
+    if(initialDeposit < MinimumDeposit)
     {
       System.out.println("\n The minimum deposit is $50.00, please try again!");
 
     }
     else
     {
-      this.accountHolder = accountHolder;
       balance += initialDeposit;
       System.out.println("\nCongratulations on your new Account!!");
       System.out.println(toString());
