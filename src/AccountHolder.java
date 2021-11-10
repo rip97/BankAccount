@@ -48,7 +48,7 @@ public class AccountHolder
     public String getAccountInfo()
     {
         // return all bank holder info plus account numnber
-        return "\nAccount Information"
+        return "\nAccount Holder Information"
                 + "\n================================="
                 + "\nCustomer Number: " + getCustomerId() 
                 + "\nAccount Holder: " + getName()

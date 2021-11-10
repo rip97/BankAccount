@@ -29,18 +29,22 @@ public class Main {
         AccountHolder holder1 = new AccountHolder("John", "Smith", "100 North Ave", "Rio Rancho", "NM", 87124);
         IRA ira = new Roth(70000,"1990-10-09", 14000, holder1.getName());
         accountHolders.add(holder1);
+        bankAccounts.add(ira);
         acctdef.put(holder1.getCustomerId(), String.valueOf(ira.getAccountNumber()));
+
 
         AccountHolder holder2 = new AccountHolder("Alan", "Turing", "", "", "", 00000);
         Savings savings = new Savings(50);
         accountHolders.add(holder2);
+        bankAccounts.add(savings);
         acctdef.put(holder2.getCustomerId(), String.valueOf(savings.getAccountNumber()));
 
         AccountHolder holder3 = new AccountHolder("Bob", "Ross", "", "", "",00000);
         BankAccount checking = new Checking(100);
         accountHolders.add(holder2);
+        bankAccounts.add(checking);
         acctdef.put(holder3.getCustomerId(), String.valueOf(checking.getAccountNumber()));
-        System.out.println();
+
 
         // write a greeting
         do {
@@ -115,7 +119,7 @@ public class Main {
     } //End of Main Program
 
     private static int writeGreeting(Scanner userInput) {
-        System.out.println("Welcome to the Java Bank!");
+        System.out.println("\nWelcome to the Java Bank!");
         System.out.println("1. New Customer");
         System.out.println("2. Existing Customer");
         System.out.println("3. Quit");
@@ -296,20 +300,27 @@ public class Main {
          }
          else { //IRA
             int suboption = iraAccountMenu(userInput);
-            if (suboption == 1) { //Traditional
+            if (suboption == 1) {
+                //Traditional
                 System.out.println("Please Enter your First Name: ");
                 entry = in.nextLine();
-                System.out.println("Please Enter your birthdate (MM/DD/YYYY): ");
+                System.out.println("Please Enter your birthdate (yyyy-mm-dd): ");
                 birthdate = in.nextLine();
                 System.out.println("Please Enter your Total Taxable Income: ");
                 taxAmount = in.nextInt();
-                //in.nextLine();
                 System.out.println();
-                bankAccount = new IRA(birthdate, taxAmount, entry);
+                bankAccount = new Traditional(birthdate, taxAmount, entry);
                 System.out.println();
             } else { //Roth
-                System.out.println();
-                bankAccount = new IRA();
+                System.out.println("What is your gross income?");
+                int gross = in.nextInt();
+                System.out.println("Please Enter your birthdate (yyyy-mm-dd):");
+                birthdate = in.nextLine();
+                System.out.println("Please Enter your Total Taxable Income: ");
+                taxAmount = in.nextInt();
+                System.out.println("Please Enter your First Name: ");
+                entry = in.nextLine();
+                bankAccount = new Roth(gross,birthdate,taxAmount,entry);
                 System.out.println();             
             }
          }
@@ -317,7 +328,7 @@ public class Main {
     }
 
     /*
-     * Search Bank Account method 
+     * Search Bank Account method, returns index of account
     */
     public static int searchBankAccounts(ArrayList<BankAccount> bankAccounts, int count, int accountNumber) {
         for (int i = 0; i < count; i++) {
@@ -326,7 +337,21 @@ public class Main {
             }
         }
         return -1;
-    }  
+    }
+
+    /*
+     * Search Bank Account method, returns toString of account
+     */
+    public static String searchBankAccounts(ArrayList<BankAccount> bankAccounts, int acctNumber)
+    {
+        for(BankAccount account: bankAccounts)
+        {
+            if(account.accountNumber == acctNumber)
+                return account.toString();
+                break;
+        }
+        return "Account Not Found";
+    }
 
     /*
      * Uses the Search Bank Account Method to ensure correct account is pulled
@@ -468,15 +493,21 @@ public class Main {
         for (int i = 0; i < holders.size(); i++) {
             if (holders.get(i).getCustomerId() == userId) {
                 holderIndex = i;
-                System.out.println(holders.get(i).getAccountInfo());
+                System.out.println(holders.get(i).getAccountInfo()+"\n");
                 break;
             }
         }
         String[] accountNums = acctTie.get(userId).split(", ");
 
-        for (String number : accountNums) {
-            accounts.get(Integer.parseInt(number) - 1001);
+        int numOfAccounts = accountNums.length;
+
+        System.out.printf("%s, you have %d account(s) with the Java Bank. They are listed below:\n",holders.get(holderIndex).getName(), numOfAccounts);
+        for(int i = 0; i < accountNums.length; i++)
+        {
+            System.out.println(searchBankAccounts(accounts,Integer.parseInt(accountNums[i])));
+
         }
+
     }
 } //END OF MAIN CLASS
 
