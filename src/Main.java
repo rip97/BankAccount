@@ -1,8 +1,11 @@
+import java.lang.reflect.Type;
+import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 
 import java.util.*;
 
 public class Main {
+
 
     public static void main(String[] args) {
         //Variables
@@ -19,14 +22,33 @@ public class Main {
         // data structure for account holder
         ArrayList<AccountHolder> accountHolders = new ArrayList<>();
 
-        //Create an ArrayList of Bank Account objects
+        //Create an ArrayList of Bank Account objects2
         ArrayList<BankAccount> bankAccounts = new ArrayList<>();
 
         //Hash Map to tie AccountNumber to AccountHolder
-        Map<Integer, String> acctdef = new HashMap<>();
+        Map<Integer, String> acctdef = new TreeMap<>();
 
-        // create a method that will create 3 default bank account objects
-        createDefaultAccounts(accountHolders, acctdef);
+        // create a 4 default bank account objects
+        AccountHolder holder1 = new AccountHolder("John", "Smith", "100 North Ave", "Rio Rancho", "NM", 87124);
+        IRA ira = new Roth(70000,"1990-10-01", 14000, holder1.getName());
+        accountHolders.add(holder1);
+        Checking checking0 = new PremiumChecking(10000);
+        acctdef.put(holder1.getCustomerId(), String.valueOf(ira.getAccountNumber() +", " + String.valueOf(checking0.getAccountNumber())));
+        bankAccounts.add(ira);
+        bankAccounts.add(checking0);
+
+        AccountHolder holder2 = new AccountHolder("Alan", "Turing", "", "", "", 00000);
+        Savings savings = new Savings(50);
+        accountHolders.add(holder2);
+        acctdef.put(holder2.getCustomerId(), String.valueOf(savings.getAccountNumber()));
+        bankAccounts.add(savings);
+
+        AccountHolder holder3 = new AccountHolder("Bob", "Ross", "", "", "",00000);
+        BankAccount checking = new Checking(100);
+        accountHolders.add(holder2);
+        acctdef.put(holder3.getCustomerId(), String.valueOf(checking.getAccountNumber()));
+        bankAccounts.add(checking);
+
         System.out.println();
 
         // write a greeting
@@ -90,8 +112,12 @@ public class Main {
                 else if (existCustomerMenu == 3) { //Withdraw
                     initializeWithdraw(bankAccounts, bankAccounts.size(), userInput);
                 }
-                else { //Update Account Information
+                else if (existCustomerMenu == 4)
+                {   //Update Account Information
                     updateAccountHolderInfo(accountHolders, accountHolders.size(), userInput);
+                }
+                else { // print account information
+                    printBankAccounts(acctdef,accountHolders,bankAccounts,userInput);
                 }
             }
             else {
@@ -101,24 +127,6 @@ public class Main {
         } while (option != 3);
 
     } //End of Main Program
-
-
-    private static void createDefaultAccounts(ArrayList<AccountHolder> holders, Map<Integer, String> acctdef) {
-        AccountHolder holder1 = new AccountHolder("John", "Smith", "100 North Ave", "Rio Rancho", "NM", 87124);
-        IRA ira = new Roth(70000,"10/01/1990", 14000, holder1.getName());
-        holders.add(holder1);
-        acctdef.put(holder1.getCustomerId(), String.valueOf(ira.getAccountNumber()));
-
-        AccountHolder holder2 = new AccountHolder("Alan", "Turing", "", "", "", 00000);
-        Savings savings = new Savings(50);
-        holders.add(holder2);
-        acctdef.put(holder2.getCustomerId(), String.valueOf(savings.getAccountNumber()));
-
-        AccountHolder holder3 = new AccountHolder("Bob", "Ross", "", "", "",00000);
-        BankAccount checking = new Checking(100);
-        holders.add(holder2);
-        acctdef.put(holder3.getCustomerId(), String.valueOf(checking.getAccountNumber()));
-    }
 
     private static int writeGreeting(Scanner userInput) {
         System.out.println("Welcome to the Java Bank!");
@@ -142,13 +150,14 @@ public class Main {
         System.out.println("2. Deposit Money");
         System.out.println("3. Withdraw Money");
         System.out.println("4. Update Account Information");
+        System.out.println("5. View Account Information");
 
         int option;
         do {
             System.out.println("Select option from menu above...");
             option = userInput.nextInt();
             userInput.nextLine();
-        } while (option < 1 || option > 4);
+        } while (option < 1 || option > 5);
 
         return option;
     }    
@@ -413,9 +422,22 @@ public class Main {
         int searchKey = searchBankAccounts(bankAccounts, count, accountNumber);
 
         if (searchKey >= 0) {
-            System.out.println("Enter the amount you would like to withdraw: ");
-            double amount = userInput.nextDouble();
-            bankAccounts.get(searchKey).withdraw(amount);
+
+            IRA account = new IRA();
+            if(account.equals(bankAccounts.get(searchKey)))
+            {
+                account.determineAge();
+                System.out.println("Enter the amount you would like to withdraw: ");
+                double amount = userInput.nextDouble();
+                bankAccounts.get(searchKey).withdraw(amount);
+
+            }
+            else
+            {
+                System.out.println("Enter the amount you would like to withdraw: ");
+                double amount = userInput.nextDouble();
+                bankAccounts.get(searchKey).withdraw(amount);
+            }
         }
         else {
             System.out.println("Cannot find account with that account number. AcctNo: " + accountNumber);
@@ -501,9 +523,47 @@ public class Main {
                 System.out.println("Cannot find Customer with Id: " + customerId);
             } 
         }
-    }    
+    }
+
+    /*
+       allows user to print all the bank accounts assoicated with account holder ID
+     */
+    public static void printBankAccounts(Map<Integer, String> acctTie, ArrayList<AccountHolder> holders, ArrayList<BankAccount> accounts,Scanner userInput)
+    {
+        // ask user for input
+        System.out.println("Please enter your account holder id: ");
+        int userId = userInput.nextInt();
+        int holderIndex = 0;
+
+        // print account holder info
+        for(int i = 0; i < holders.size(); i++)
+        {
+            if(holders.get(i).getCustomerId() == userId)
+            {
+                holderIndex = i;
+                System.out.println(holders.get(i).getAccountInfo());
+                break;
+            }
+        }
+        String[] accountNums = acctTie.get(userId).split(", ");
+
+        for(String number: accountNums)
+        {
+            accounts.get(Integer.parseInt(number)-1001);
+        }
+
+
+
+
+
+
+
+
+    }
 
 } //END OF MAIN CLASS
+
+
 
 
 

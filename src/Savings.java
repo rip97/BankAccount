@@ -1,7 +1,7 @@
 public class Savings extends BankAccount{
   //Interest rate is 0.15%
   private static final double InterestRate = 0.0015;
-  private double MinimumDeposit = 50.00;
+  private static final double MinimumDeposit = 50.00;
   private int NumofWithdrawals = 0;
   private int WithdrawalLimit= 9;
   private static final int WithdrawalFee = 5;
@@ -34,14 +34,9 @@ public class Savings extends BankAccount{
     return InterestRate;
   }
 
-  /*public int getWithdrawalLimit() {
-    return withdrawalLimit;
-  }*/
-
   public int getWithdrawalFee() {
     return WithdrawalFee;
   }
-
 
   private void withdrawlimit(int NumofWithdrawals){
     if(WithdrawalLimit >= NumofWithdrawals)
@@ -55,28 +50,19 @@ public class Savings extends BankAccount{
   }
 
   // make note of this method
-  public void withdraw(double amount)
-  {
-    if (amount > MinimumDeposit)
-    {
-      System.out.println("Declined. This amount can not surpass minimum deposit");
+  public void withdraw(double amount) {
+    if ((balance - (amount + WithdrawalFee)) > MinimumDeposit) {
+
+        balance = balance - (amount + WithdrawalFee);
+        System.out.printf("Withdrawal Amount: $%.2f%n", amount);
+        System.out.println("Transaction Fee: $" + WithdrawalFee + ".00");
+        System.out.printf("Your Account balance: $%.2f%n", balance);
     }
     else
-    {
-      if((amount + WithdrawalFee) >= balance)
-      {
-        System.out.println("Declined. This amount cannot have a zero balance");
-
-      }
-      else
-      {
-        System.out.printf("Withdrawal Amount: $%.2f%n", amount);
-        System.out.printf("Transaction Fee: %.2f%n", WithdrawalFee);
-        System.out.printf("Your Account balance: $%.2f%n", balance);
-      }
-    }
-
+      System.out.println("Declined. This amount can not surpass minimum deposit");
   }
+
+
 
   public void deposit(double amount){
     if(amount<=0)
