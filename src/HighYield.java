@@ -30,18 +30,6 @@ public class HighYield extends Savings{
         }
     }
 
-    /*public double getInterestRate() {
-        return InterestRate;
-    }
-
-    public int getWithdrawalLimit() {
-        return withdrawalLimit;
-    }
-
-    public int getWithdrawalFee() {
-        return WithdrawalFee;
-    }*/
-
 
     public void withdrawlimit(int NumofWithdrawals){
         if(WithdrawalLimit >= NumofWithdrawals)
@@ -69,7 +57,7 @@ public class HighYield extends Savings{
             else
             {
                 System.out.printf("Withdrawal Amount: $%.2f%n", amount);
-                System.out.printf("Transaction Fee: %.2f%n", WithdrawalFee);
+                System.out.printf("Transaction Fee: %n.00", WithdrawalFee);
                 System.out.printf("Your Account balance: $%.2f%n", balance);
             }
         }

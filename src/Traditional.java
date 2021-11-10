@@ -10,8 +10,8 @@ public class Traditional extends IRA{
     public Traditional(String birthDate, double taxIncomeAmt, String accountHolder)
     {
         super(birthDate,taxIncomeAmt,accountHolder);
-        System.out.println("\nCongratulations on your new Account!!");
-        System.out.println(toString());
+
+
     }
 
     public void deposit(double amount)
@@ -40,7 +40,6 @@ public class Traditional extends IRA{
     {
         return determineAge() < 70.0;
     }
-
 
     public void checkRequiredAge()
     {

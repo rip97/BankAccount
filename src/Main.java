@@ -1,11 +1,8 @@
-import java.lang.reflect.Type;
-import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 
 import java.util.*;
 
 public class Main {
-
 
     public static void main(String[] args) {
         //Variables
@@ -22,33 +19,27 @@ public class Main {
         // data structure for account holder
         ArrayList<AccountHolder> accountHolders = new ArrayList<>();
 
-        //Create an ArrayList of Bank Account objects2
+        //Create an ArrayList of Bank Account objects
         ArrayList<BankAccount> bankAccounts = new ArrayList<>();
 
         //Hash Map to tie AccountNumber to AccountHolder
         Map<Integer, String> acctdef = new TreeMap<>();
 
-        // create a 4 default bank account objects
+        // create a method that will create 3 default bank account objects
         AccountHolder holder1 = new AccountHolder("John", "Smith", "100 North Ave", "Rio Rancho", "NM", 87124);
-        IRA ira = new Roth(70000,"1990-10-01", 14000, holder1.getName());
+        IRA ira = new Roth(70000,"1990-10-09", 14000, holder1.getName());
         accountHolders.add(holder1);
-        Checking checking0 = new PremiumChecking(10000);
-        acctdef.put(holder1.getCustomerId(), String.valueOf(ira.getAccountNumber() +", " + String.valueOf(checking0.getAccountNumber())));
-        bankAccounts.add(ira);
-        bankAccounts.add(checking0);
+        acctdef.put(holder1.getCustomerId(), String.valueOf(ira.getAccountNumber()));
 
         AccountHolder holder2 = new AccountHolder("Alan", "Turing", "", "", "", 00000);
         Savings savings = new Savings(50);
         accountHolders.add(holder2);
         acctdef.put(holder2.getCustomerId(), String.valueOf(savings.getAccountNumber()));
-        bankAccounts.add(savings);
 
         AccountHolder holder3 = new AccountHolder("Bob", "Ross", "", "", "",00000);
         BankAccount checking = new Checking(100);
         accountHolders.add(holder2);
         acctdef.put(holder3.getCustomerId(), String.valueOf(checking.getAccountNumber()));
-        bankAccounts.add(checking);
-
         System.out.println();
 
         // write a greeting
@@ -95,30 +86,25 @@ public class Main {
                     System.out.println("Please enter your CustomerID:");
                     customerId = userInput.nextInt();
                     int searchKey = searchAccountHolders(accountHolders, accountHolders.size(), customerId);
-                    if (searchKey >= 0) { 
-                        BankAccount addAcct = createAccount(userInput);                        
+                    if (searchKey >= 0) {
+                        BankAccount addAcct = createAccount(userInput);
                         //This block updates the Values for existing keys to keep track of AccountHolders with multiple accounts.
                         if (acctdef.containsKey(customerId)) {
                             acctdef.put(customerId, acctdef.get(customerId) + ", " + String.valueOf(addAcct.getAccountNumber()));
                         }
-                    }
-                    else {
+                    } else {
                         System.out.println("Cannot find Customer with Id: " + customerId);
-                    } 
-                }
-                else if (existCustomerMenu == 2) { //Deposit
+                    }
+                } else if (existCustomerMenu == 2) { //Deposit
                     initializeDeposit(bankAccounts, bankAccounts.size(), userInput);
-                }
-                else if (existCustomerMenu == 3) { //Withdraw
+                } else if (existCustomerMenu == 3) { //Withdraw
                     initializeWithdraw(bankAccounts, bankAccounts.size(), userInput);
-                }
-                else if (existCustomerMenu == 4)
-                {   //Update Account Information
+                } else if (existCustomerMenu == 4) //Update Account Information
+                {
                     updateAccountHolderInfo(accountHolders, accountHolders.size(), userInput);
                 }
-                else { // print account information
+                else
                     printBankAccounts(acctdef,accountHolders,bankAccounts,userInput);
-                }
             }
             else {
                 System.out.println("Thanks for visiting Java Bank! Come again!");
@@ -150,7 +136,7 @@ public class Main {
         System.out.println("2. Deposit Money");
         System.out.println("3. Withdraw Money");
         System.out.println("4. Update Account Information");
-        System.out.println("5. View Account Information");
+        System.out.println("5. Account Information Report");
 
         int option;
         do {
@@ -231,30 +217,8 @@ public class Main {
         int option;
 
         System.out.println("What type of Savings Account would you like to open today?");
-        System.out.println("1. Standard Savings Account");
-        System.out.println("2. High Yield Savings Account");
-        System.out.println();
-        System.out.println("See account differences below to guide your selection.");
-        
-        //Create Array list to display Different Types of Checking Accounts.
-        ArrayList<String> savingsAccountInfo = new ArrayList<>();
-        savingsAccountInfo.add("Standard Savings Account Info");
-        savingsAccountInfo.add("$50 minimum deposit");
-        savingsAccountInfo.add("0.15% Annual Percentage Yield");
-        savingsAccountInfo.add("Monthly withdrawal/transfer limit is 9 per month");
-        savingsAccountInfo.add("$5.00 withdrawal fee");
-        savingsAccountInfo.add("");
-        savingsAccountInfo.add("High Yield Savings Account Info");
-        savingsAccountInfo.add("$500 minimum deposit");
-        savingsAccountInfo.add("0.40% Annual Percentage Yield");
-        savingsAccountInfo.add("Monthly withdrawal/transfer limit is 5 per month");
-        savingsAccountInfo.add("$5.00 withdrawal fee");
-        savingsAccountInfo.add("");
-
-        //Print Information on Checking Account
-        for (int i = 0; i < savingsAccountInfo.size(); i++) {
-			System.out.println(savingsAccountInfo.get(i));
-		}
+        System.out.println("1. High Yield Savings Account");
+        System.out.println("2. Certificate of Deposit (CD) Account");
 
         do {
             System.out.println("Select option from menu above...");
@@ -326,43 +290,16 @@ public class Main {
                     bankAccount = new PremiumChecking();
                 }
             }
-
-////////sicily modify this portion
         } else if (option == 2) { //Savings Account
-            int suboption = savingsAccountMenu(userInput);
-            if (suboption == 1) { //Standard Savings
-                System.out.println ("Do you have an initial deposit? Y/N");
-                entry = in.nextLine();
-                if(entry.toLowerCase().equals("y")) {
-                    System.out.println("Please enter the amount you would like to deposit: ");
-                    initialDeposit = in.nextDouble();
-                    System.out.println();
-                    bankAccount = new Savings(initialDeposit);
-                }
-                else {
-                    bankAccount = new Savings();
-                }
-            } else { //High Yield Savings
-                System.out.println ("Do you have an initial deposit? Y/N");
-                entry = in.nextLine();
-                if(entry.toLowerCase().equals("y")) {
-                    System.out.println("Please enter the amount you would like to deposit: ");
-                    initialDeposit = in.nextDouble();
-                    System.out.println();
-                    bankAccount = new HighYield(initialDeposit);
-                }
-                else {
-                    bankAccount = new HighYield();
-                }
-            }
-        }
-//////////
+            //BUILD THIS OUT WHEN SAVINGS ACCOUNT HAS BEEN UPDATED
+            System.out.println("Savings Account created."); 
+         }
          else { //IRA
             int suboption = iraAccountMenu(userInput);
             if (suboption == 1) { //Traditional
                 System.out.println("Please Enter your First Name: ");
                 entry = in.nextLine();
-                System.out.println("Please Enter your birthdate (YYYY/MM/DD): ");
+                System.out.println("Please Enter your birthdate (MM/DD/YYYY): ");
                 birthdate = in.nextLine();
                 System.out.println("Please Enter your Total Taxable Income: ");
                 taxAmount = in.nextInt();
@@ -422,17 +359,12 @@ public class Main {
         int searchKey = searchBankAccounts(bankAccounts, count, accountNumber);
 
         if (searchKey >= 0) {
-
-            IRA account = new IRA();
-            if(account.equals(bankAccounts.get(searchKey)))
-            {
-                account.determineAge();
+            if (bankAccounts.get(searchKey) instanceof Traditional) {
+                ((Traditional) bankAccounts.get(searchKey)).checkRequiredAge();
                 System.out.println("Enter the amount you would like to withdraw: ");
                 double amount = userInput.nextDouble();
                 bankAccounts.get(searchKey).withdraw(amount);
-
-            }
-            else
+            } else
             {
                 System.out.println("Enter the amount you would like to withdraw: ");
                 double amount = userInput.nextDouble();
@@ -525,21 +457,16 @@ public class Main {
         }
     }
 
-    /*
-       allows user to print all the bank accounts assoicated with account holder ID
-     */
-    public static void printBankAccounts(Map<Integer, String> acctTie, ArrayList<AccountHolder> holders, ArrayList<BankAccount> accounts,Scanner userInput)
-    {
+
+    public static void printBankAccounts(Map<Integer, String> acctTie, ArrayList<AccountHolder> holders, ArrayList<BankAccount> accounts,Scanner userInput) {
         // ask user for input
         System.out.println("Please enter your account holder id: ");
         int userId = userInput.nextInt();
         int holderIndex = 0;
 
         // print account holder info
-        for(int i = 0; i < holders.size(); i++)
-        {
-            if(holders.get(i).getCustomerId() == userId)
-            {
+        for (int i = 0; i < holders.size(); i++) {
+            if (holders.get(i).getCustomerId() == userId) {
                 holderIndex = i;
                 System.out.println(holders.get(i).getAccountInfo());
                 break;
@@ -547,23 +474,11 @@ public class Main {
         }
         String[] accountNums = acctTie.get(userId).split(", ");
 
-        for(String number: accountNums)
-        {
-            accounts.get(Integer.parseInt(number)-1001);
+        for (String number : accountNums) {
+            accounts.get(Integer.parseInt(number) - 1001);
         }
-
-
-
-
-
-
-
-
     }
-
 } //END OF MAIN CLASS
-
-
 
 
 
