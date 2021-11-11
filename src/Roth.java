@@ -2,9 +2,9 @@ public class Roth extends IRA{
 
     private int grossIncome;
 
-    public Roth(int grossIncome, String birthDate, double taxIncomeAmt, String accountHolder)
+    public Roth(int grossIncome, String birthDate, double taxIncomeAmt, String accountHolder, double initialDeposit)
     {
-        super(birthDate,taxIncomeAmt,accountHolder);
+        super(birthDate,taxIncomeAmt,accountHolder, initialDeposit);
         this.grossIncome = grossIncome;
     }
 

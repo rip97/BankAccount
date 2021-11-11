@@ -12,7 +12,6 @@ public class HighYield extends Savings{
     }
 
     public HighYield(double initialDeposit) {
-        //super(initialDeposit);
         super();
 
         if(initialDeposit < MinimumDeposit)

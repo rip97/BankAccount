@@ -7,10 +7,9 @@ public class Traditional extends IRA{
     private double requiredAge;
     private double minDistributuion;
 
-    public Traditional(String birthDate, double taxIncomeAmt, String accountHolder)
+    public Traditional(String birthDate, double taxIncomeAmt, String accountHolder, double initialDeposit)
     {
-        super(birthDate,taxIncomeAmt,accountHolder);
-
+        super(birthDate,taxIncomeAmt,accountHolder, initialDeposit);
 
     }
 

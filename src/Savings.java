@@ -78,7 +78,7 @@ public class Savings extends BankAccount{
   }
 
   public String toString() {
-    return "New Savings Account information:"
+    return "Savings Account information:"
             + "\n================================="
             + "\nAccountNumber: " + accountNumber
             + "\nBalance: $" + balance

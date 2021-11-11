@@ -80,7 +80,7 @@ public class Checking extends BankAccount {
     }
 
 	public String toString() {
-		return "New Checking Account information:"
+		return "Checking Account information:"
 				+ "\n================================="
 				+ "\nAccountNumber: " + getAccountNumber()
 				+ "\nBalance: $" + getBalance()

@@ -27,7 +27,7 @@ public class Main {
 
         // create a method that will create 3 default bank account objects
         AccountHolder holder1 = new AccountHolder("John", "Smith", "100 North Ave", "Rio Rancho", "NM", 87124);
-        IRA ira = new Roth(70000,"1990-10-09", 14000, holder1.getName());
+        IRA ira = new Roth(70000,"1990-10-09", 14000, holder1.getName(), 15000);
         accountHolders.add(holder1);
         bankAccounts.add(ira);
         acctdef.put(holder1.getCustomerId(), String.valueOf(ira.getAccountNumber()));
@@ -96,7 +96,10 @@ public class Main {
                         bankAccounts.add(addAcct);
                         //This block updates the Values for existing keys to keep track of AccountHolders with multiple accounts.
                         if (acctdef.containsKey(customerId)) {
-                            acctdef.put(customerId, acctdef.get(customerId) + ", " + String.valueOf(addAcct.getAccountNumber()));
+                            if(acctdef.get(customerId).equals(""))
+                                acctdef.replace(customerId, String.valueOf(addAcct.getAccountNumber()));
+                            else
+                                acctdef.put(customerId, acctdef.get(customerId) + ", " + String.valueOf(addAcct.getAccountNumber()));
                         }
                     } else {
                         System.out.println("Cannot find Customer with Id: " + customerId);
@@ -228,8 +231,8 @@ public class Main {
         int option;
 
         System.out.println("What type of Savings Account would you like to open today?");
-        System.out.println("1. High Yield Savings Account");
-        System.out.println("2. Certificate of Deposit (CD) Account");
+        System.out.println("1. Standard Savings");
+        System.out.println("2. HighYield");
 
         do {
             System.out.println("Select option from menu above...");
@@ -264,7 +267,7 @@ public class Main {
         //Local Variables to drive how the account is created
         String entry, birthdate;
         double taxAmount;
-        double initialDeposit;
+        double initialDeposit = 0;
 
         //Instaniate new Scanner objects
         Scanner in = new Scanner(System.in);
@@ -333,28 +336,45 @@ public class Main {
             System.out.println("Savings Account created."); 
          }
          else { //IRA
+             String name;
             int suboption = iraAccountMenu(userInput);
             if (suboption == 1) {
                 //Traditional
                 System.out.println("Please Enter your First Name: ");
-                entry = in.nextLine();
+                name = in.nextLine();
                 System.out.println("Please Enter your birthdate (yyyy-mm-dd): ");
                 birthdate = in.nextLine();
                 System.out.println("Please Enter your Total Taxable Income: ");
-                taxAmount = in.nextInt();
+                taxAmount = userInput.nextDouble();
+                System.out.println ("Do you have an initial deposit? Y/N");
+                entry = in.nextLine();
+                if(entry.toLowerCase().equals("y"))
+                {
+                    System.out.println("Please enter the amount you would like to deposit: ");
+                    initialDeposit = userInput.nextDouble();
+                }
+                bankAccount = new Traditional(birthdate, taxAmount, name,initialDeposit);
                 System.out.println();
-                bankAccount = new Traditional(birthdate, taxAmount, entry);
-                System.out.println();
-            } else { //Roth
-                System.out.println("What is your gross income?");
-                int gross = in.nextInt();
+            }
+            else
+            {   //Roth
                 System.out.println("Please Enter your birthdate (yyyy-mm-dd):");
                 birthdate = in.nextLine();
-                System.out.println("Please Enter your Total Taxable Income: ");
-                taxAmount = in.nextInt();
-                System.out.println("Please Enter your First Name: ");
+                System.out.println("Please Enter your full Name: ");
+                name = in.nextLine();
+                System.out.println ("Do you have an initial deposit? Y/N");
                 entry = in.nextLine();
-                bankAccount = new Roth(gross,birthdate,taxAmount,entry);
+                if(entry.toLowerCase().equals("y"))
+                {
+                    System.out.println("Please enter the amount you would like to deposit: ");
+                    initialDeposit = userInput.nextDouble();
+                }
+                System.out.println("What is your gross income?");
+                int gross = userInput.nextInt();
+                System.out.println("Please Enter your Total Taxable Income: ");
+                taxAmount = userInput.nextDouble();
+
+                bankAccount = new Roth(gross,birthdate,taxAmount,name, initialDeposit);
                 System.out.println();             
             }
          }
@@ -531,18 +551,22 @@ public class Main {
                 break;
             }
         }
-        String[] accountNums = acctTie.get(userId).split(", ");
-
-        int numOfAccounts = accountNums.length;
-
-        System.out.printf("%s, you have %d account(s) with the Java Bank. They are listed below:\n",holders.get(holderIndex).getName(), numOfAccounts);
-        for(int i = 0; i < accountNums.length; i++)
+        int numOfAccounts = -1;
+        if(acctTie.get(userId).equals(""))
         {
-            String num = accountNums[i];
-            int actNum = Integer.parseInt(num);
-            System.out.println(searchBankAccounts(accounts,actNum));
+            numOfAccounts = 0;
+            System.out.printf("%s, you have %d accounts with the Java Bank.", holders.get(holderIndex).getName(), numOfAccounts);
+        }
+        else {
 
-
+            String[] accountNums = acctTie.get(userId).split(", ");
+            numOfAccounts = accountNums.length;
+            System.out.printf("%s, you have %d account(s) with the Java Bank. They are listed below:\n", holders.get(holderIndex).getName(), numOfAccounts);
+            for (int i = 0; i < accountNums.length; i++) {
+                String num = accountNums[i];
+                int actNum = Integer.parseInt(num);
+                System.out.println(searchBankAccounts(accounts, actNum));
+            }
         }
     }
 
@@ -655,24 +679,3 @@ public class Main {
     }     
 
 } //END OF MAIN CLASS
-
-
-
-/*
- *debug print methods used in new customer print methods
-for (int i = 0; i < accountHolders.size(); i++) {
-    System.out.println("AccountHolders");
-    System.out.println(accountHolders.get(i).getAccountInfo());
-}
-
-for (int i = 0; i < bankAccounts.size(); i++) {
-    System.out.println("BankAccounts");
-    System.out.println(bankAccounts.get(i).getAccountNumber());
-}
-
-for(Object key : acctdef.keySet()){
-    System.out.println("Print out Map");
-    System.out.println(acctdef.get(key));
-} 
- * 
- */

@@ -12,11 +12,12 @@ public class IRA extends BankAccount {
 
     public IRA() {}
 
-    public IRA(String birthDate, double taxIncomeAmt, String accountHolder)
+    public IRA(String birthDate, double taxIncomeAmt, String accountHolder, double initialDeposit)
     {
         this.accountHolder = accountHolder;
         this.birthDate = birthDate; // in the format yyyy-MM-dd
         this.taxIncomeAmt = taxIncomeAmt;
+        this.balance += initialDeposit;
         System.out.println("\nCongratulations on your new IRA Account!!");
         System.out.println(toString());
     }
