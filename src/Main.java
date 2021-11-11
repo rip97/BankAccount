@@ -39,9 +39,9 @@ public class Main {
         bankAccounts.add(savings);
         acctdef.put(holder2.getCustomerId(), String.valueOf(savings.getAccountNumber()));
 
-        AccountHolder holder3 = new AccountHolder("Bob", "Ross", "", "", "",00000);
+        AccountHolder holder3 = new AccountHolder("Bob", "Ross", "900 Painter Road", "Albuquerque", "NM",87114);
         BankAccount checking = new Checking(100);
-        accountHolders.add(holder2);
+        accountHolders.add(holder3);
         bankAccounts.add(checking);
         acctdef.put(holder3.getCustomerId(), String.valueOf(checking.getAccountNumber()));
 
@@ -86,12 +86,14 @@ public class Main {
             else if (option == 2) { //Existing Customer
                 existCustomerMenu = bankMenu(userInput);
                 System.out.println();
-                if (existCustomerMenu == 1) { //Create New Account                    
+                if (existCustomerMenu == 1) {
+                    //Create New Account
                     System.out.println("Please enter your CustomerID:");
                     customerId = userInput.nextInt();
                     int searchKey = searchAccountHolders(accountHolders, accountHolders.size(), customerId);
                     if (searchKey >= 0) {
                         BankAccount addAcct = createAccount(userInput);
+                        bankAccounts.add(addAcct);
                         //This block updates the Values for existing keys to keep track of AccountHolders with multiple accounts.
                         if (acctdef.containsKey(customerId)) {
                             acctdef.put(customerId, acctdef.get(customerId) + ", " + String.valueOf(addAcct.getAccountNumber()));
@@ -295,7 +297,34 @@ public class Main {
                 }
             }
         } else if (option == 2) { //Savings Account
-            //BUILD THIS OUT WHEN SAVINGS ACCOUNT HAS BEEN UPDATED
+
+            int suboption = savingsAccountMenu(userInput);
+            if(suboption == 1) { //Standard Savings
+                System.out.println ("Do you have an initial deposit? Y/N");
+                entry = in.nextLine();
+                if(entry.toLowerCase().equals("y")) {
+                    System.out.println("Please enter the amount you would like to deposit: ");
+                    initialDeposit = in.nextDouble();
+                    System.out.println();
+                    bankAccount = new Savings(initialDeposit);
+                }
+                else {
+                    bankAccount = new Savings();
+                }
+            } else { //High Yield Savings
+                System.out.println ("Do you have an initial deposit? Y/N");
+                entry = in.nextLine();
+                if(entry.toLowerCase().equals("y")) {
+                    System.out.println("Please enter the amount you would like to deposit: ");
+                    initialDeposit = in.nextDouble();
+                    System.out.println();
+                    bankAccount = new HighYield(initialDeposit);
+                }
+                else {
+                    bankAccount = new HighYield();
+                }
+            }
+
             System.out.println("Savings Account created."); 
          }
          else { //IRA
@@ -344,11 +373,11 @@ public class Main {
      */
     public static String searchBankAccounts(ArrayList<BankAccount> bankAccounts, int acctNumber)
     {
-        for(BankAccount account: bankAccounts)
+        for(int i = 0; i < bankAccounts.size(); i++)
         {
-            if(account.accountNumber == acctNumber)
-                return account.toString();
-                break;
+            if(bankAccounts.get(i).getAccountNumber() == acctNumber)
+                return bankAccounts.get(i).toString();
+
         }
         return "Account Not Found";
     }
@@ -504,7 +533,10 @@ public class Main {
         System.out.printf("%s, you have %d account(s) with the Java Bank. They are listed below:\n",holders.get(holderIndex).getName(), numOfAccounts);
         for(int i = 0; i < accountNums.length; i++)
         {
-            System.out.println(searchBankAccounts(accounts,Integer.parseInt(accountNums[i])));
+            String num = accountNums[i];
+            int actNum = Integer.parseInt(num);
+            System.out.println(searchBankAccounts(accounts,actNum));
+
 
         }
 

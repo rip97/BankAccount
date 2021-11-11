@@ -45,7 +45,7 @@ public class Traditional extends IRA{
     {
         if(determineAge() >= 70.0)
             minDistributuion = calculateMinDist((int)determineAge());
-            System.out.printf("You are required to take a minimun distribution of %.2f based on your age.",minDistributuion);
+            System.out.printf("You are required to take a minimun distribution of %.2f based on your age.\n",minDistributuion);
 
     }
 
