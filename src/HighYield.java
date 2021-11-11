@@ -9,8 +9,6 @@ public class HighYield extends Savings{
 
     public HighYield() {
         super();
-        System.out.println("\n Congratulations on your new High Yield Savings Account!!");
-        System.out.println(toString());
     }
 
     public HighYield(double initialDeposit) {

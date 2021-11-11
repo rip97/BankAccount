@@ -105,9 +105,12 @@ public class Main {
                     initializeDeposit(bankAccounts, bankAccounts.size(), userInput);
                 } else if (existCustomerMenu == 3) { //Withdraw
                     initializeWithdraw(bankAccounts, bankAccounts.size(), userInput);
-                } else if (existCustomerMenu == 4) //Update Account Information
-                {
+                } else if (existCustomerMenu == 4) { //Update Account Information
                     updateAccountHolderInfo(accountHolders, accountHolders.size(), userInput);
+                } else if (existCustomerMenu == 5) { //Close Single Account
+                    closeBankAccount(accountHolders, bankAccounts, acctdef, bankAccounts.size(), userInput);
+                } else if (existCustomerMenu == 6) { //Close All Accounts & Delete Account Holder
+                    deleteAccountHolder(accountHolders, bankAccounts, acctdef, accountHolders.size(), userInput);
                 }
                 else
                     printBankAccounts(acctdef,accountHolders,bankAccounts,userInput);
@@ -142,14 +145,16 @@ public class Main {
         System.out.println("2. Deposit Money");
         System.out.println("3. Withdraw Money");
         System.out.println("4. Update Account Information");
-        System.out.println("5. Account Information Report");
+        System.out.println("5. Close individual Account");
+        System.out.println("6. Close All Accounts");
+        System.out.println("7. Account Information Report");
 
         int option;
         do {
             System.out.println("Select option from menu above...");
             option = userInput.nextInt();
             userInput.nextLine();
-        } while (option < 1 || option > 5);
+        } while (option < 1 || option > 7);
 
         return option;
     }    
@@ -539,8 +544,116 @@ public class Main {
 
 
         }
-
     }
+
+    /*
+     * Search Array for Bank Account Closure
+     * Returns the Index of found value 
+     * Parameters is array and value to be searched for
+    */
+    public static int findIndex(List<String> accountNums, int count, int accountNum) {
+        for (int i = 0; i < count; i++) {
+            if (accountNums.contains(String.valueOf(accountNum))) {
+                return i;
+            }
+        }
+        return -1;
+    } 
+
+    /*
+     * Close Bank Account Holders prompt
+    */
+    public static void closeBankAccount(ArrayList<AccountHolder> accountHolders, ArrayList<BankAccount> bankAccounts, Map<Integer, String> acctDef, int count, Scanner userInput) {
+        System.out.println("Please enter your CustomerId: ");
+        int customerId = userInput.nextInt();
+
+        int searchKey = searchAccountHolders(accountHolders, count, customerId);
+
+        if (searchKey >= 0) {
+            System.out.println("Please enter the account number you would like to close: ");
+            int accountNumber = userInput.nextInt();
+    
+            int searchKey2 = searchBankAccounts(bankAccounts, count, accountNumber);
+    
+            if (searchKey2 >= 0) {
+                //This block creates another String Array to split Values from HashMap linked to AccountHolderID
+                String [] acctDefValue = acctDef.get(customerId).split(",");
+
+                //Create another array to trim whitespace around the values in the array
+                String [] trimmedAcctNums = new String [acctDefValue.length];
+                for (int i = 0; i < acctDefValue.length; i++) {
+                    trimmedAcctNums[i] = acctDefValue[i].trim();
+                }
+                
+                //Moves values from Array into an ArrayList for easier removal
+                List<String> mapValues = new ArrayList<>(); //Arrays.asList(trimmedAcctNums);
+                Collections.addAll(mapValues, trimmedAcctNums);
+
+                int locateIndex = findIndex(mapValues, mapValues.size(), accountNumber);                
+                mapValues.remove(locateIndex);
+
+                String updatedAccountNum = mapValues.toString();
+
+                //Notify use that Account has been closed
+                System.out.println("Account Number: " + accountNumber + " has been closed.");
+                bankAccounts.remove(searchKey);
+
+                //Update AccountHolder to BankAccount Association in the HashMap
+                acctDef.put(customerId, updatedAccountNum.substring(1, updatedAccountNum.length()-1));
+            }                  
+            else {
+                //System.out.println("That Account Number is not associated with this Account Holder.");
+                System.out.println("Cannot find account with that account number. AcctNo: " + accountNumber);
+            }
+        }
+        else {
+            System.out.println("Cannot find Customer with Id: " + customerId);
+        } 
+    }
+    
+    /*
+     * Delete Account Holders + Associated Bank Accounts
+    */
+    public static void deleteAccountHolder(ArrayList<AccountHolder> accountHolders, ArrayList<BankAccount> bankAccounts, Map<Integer, String> acctDef, int count, Scanner userInput) {
+        System.out.println("Please enter your CustomerId: ");
+        int customerId = userInput.nextInt();
+
+        int searchKey = searchAccountHolders(accountHolders, count, customerId);
+
+        if (searchKey >= 0) {
+            //Pulls account holder name
+            String accountPerson = accountHolders.get(searchKey).getName();
+
+            //This block creates another String Array to split Values from HashMap linked to AccountHolderID
+            String [] acctDefValue = acctDef.get(customerId).split(",");
+
+            //Create another array to trim whitespace around the values in the array
+            String [] trimmedAcctNums = new String [acctDefValue.length];
+            for (int i = 0; i < acctDefValue.length; i++) {
+                trimmedAcctNums[i] = acctDefValue[i].trim();
+            }
+
+            //Notify the User which their account has been closed and what their account numbers were.
+            System.out.println("Account has been closed for: " + accountPerson);
+            System.out.print("Associated Account Numbers: " + acctDef.get(customerId));
+            
+            //Remove Accounts from BankAccounts ArrayList
+            for (int i = 0; i < trimmedAcctNums.length; i++) {
+                int searchaccountNum = searchBankAccounts(bankAccounts, bankAccounts.size(), Integer.parseInt(trimmedAcctNums[i]));
+                bankAccounts.remove(searchaccountNum);
+            }
+            
+            //Delete AccountHolder to BankAccount Association in the HashMap
+            acctDef.remove(accountHolders.get(searchKey).getCustomerId()); 
+            
+            //Remove the AccountHolder from the AccountHolder ArrayList
+            accountHolders.remove(searchKey);
+        }
+        else {
+            System.out.println("Cannot find Customer with Id: " + customerId);
+        }
+    }     
+
 } //END OF MAIN CLASS
 
 
