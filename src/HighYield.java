@@ -54,7 +54,7 @@ public class HighYield extends Savings{
             else
             {
                 System.out.printf("Withdrawal Amount: $%.2f%n", amount);
-                System.out.printf("Transaction Fee: %n.00", WithdrawalFee);
+                System.out.printf("Transaction Fee: %d.00", WithdrawalFee);
                 System.out.printf("Your Account balance: $%.2f%n", balance);
             }
         }

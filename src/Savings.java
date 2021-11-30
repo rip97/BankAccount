@@ -55,7 +55,7 @@ public class Savings extends BankAccount{
 
         balance = balance - (amount + WithdrawalFee);
         System.out.printf("Withdrawal Amount: $%.2f%n", amount);
-        System.out.println("Transaction Fee: $" + WithdrawalFee + ".00");
+        System.out.println("Transaction Fee: $" + WithdrawalFee + " dollars.");
         System.out.printf("Your Account balance: $%.2f%n", balance);
     }
     else

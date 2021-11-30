@@ -1,2 +1,4 @@
-customerId,accountNumber,balance
-5001,1001,10000
+accountNumber,accountHolderID,balance
+1001,5001,10000
+1002,5002,9500
+1004,5002,100000

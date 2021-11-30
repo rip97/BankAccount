@@ -6,123 +6,127 @@ public class Main {
 
     public static void main(String[] args) {
         //Variables
-        String firstName, lastName, street, city, state;
-        int zip, customerId;
-
-        //Variable for Scanner object
-        int option;
-        int existCustomerMenu;
-
-        //Instantiate Scanner objects
-        Scanner userInput = new Scanner(System.in);
-
-        // data structure for account holder
-        ArrayList<AccountHolder> accountHolders = new ArrayList<>();
-
-        //Create an ArrayList of Bank Account objects
-        ArrayList<BankAccount> bankAccounts = new ArrayList<>();
-
-        //Hash Map to tie AccountNumber to AccountHolder
-        Map<Integer, String> acctdef = new TreeMap<>();
-
-        // create a method that will create 3 default bank account objects
-        AccountHolder holder1 = new AccountHolder("John", "Smith", "100 North Ave", "Rio Rancho", "NM", 87124);
-        IRA ira = new Roth(70000,"1990-10-09", 14000, holder1.getName(), 15000);
-        accountHolders.add(holder1);
-        bankAccounts.add(ira);
-        acctdef.put(holder1.getCustomerId(), String.valueOf(ira.getAccountNumber()));
+        //DBConn conn = new DBConn("AccountHolders.csv");
+        //DBBankAcct bank = new DBBankAcct("BankAccounts.csv");
 
 
-        AccountHolder holder2 = new AccountHolder("Alan", "Turing", "", "", "", 00000);
-        Savings savings = new Savings(50);
-        accountHolders.add(holder2);
-        bankAccounts.add(savings);
-        acctdef.put(holder2.getCustomerId(), String.valueOf(savings.getAccountNumber()));
-
-        AccountHolder holder3 = new AccountHolder("Bob", "Ross", "900 Painter Road", "Albuquerque", "NM",87114);
-        BankAccount checking = new Checking(100);
-        accountHolders.add(holder3);
-        bankAccounts.add(checking);
-        acctdef.put(holder3.getCustomerId(), String.valueOf(checking.getAccountNumber()));
-
-
-        // write a greeting
-        do {
-            option = writeGreeting(userInput);
-            System.out.println();
-            if (option == 1) { //New Customer
-                System.out.println("Please enter your First Name: ");
-                firstName = userInput.nextLine();
-                System.out.println("Please enter your Last Name: ");
-                lastName = userInput.nextLine();
-                System.out.println("Please enter your Street Address: ");
-                street = userInput.nextLine();
-                System.out.println("Please enter the city: ");
-                city = userInput.nextLine();
-                System.out.println("Please enter the state: ");
-                state = userInput.nextLine();
-                System.out.println("Please enter your zipcode: ");
-                zip = userInput.nextInt();
-
-                //Creates AccountHolder based on User Entry
-                AccountHolder newAcct = new AccountHolder(firstName, lastName, street, city, state, zip);
-                accountHolders.add(newAcct);
-                customerId = newAcct.getCustomerId();
-
-                //Creates new BankAccount
-                BankAccount newAccount = createAccount(userInput);
-                bankAccounts.add(newAccount);
-                
-                System.out.println();
-                System.out.println();
-                System.out.println("*********************************");
-                System.out.println("Your Customer Number is: " + customerId);
-                System.out.println("Please keep this number in your records!");
-                System.out.println();
-                
-                //Ties Bank Account to Account Holder
-                acctdef.put(newAcct.getCustomerId(), String.valueOf(newAccount.getAccountNumber()));
-            }
-            else if (option == 2) { //Existing Customer
-                existCustomerMenu = bankMenu(userInput);
-                System.out.println();
-                if (existCustomerMenu == 1) {
-                    //Create New Account
-                    System.out.println("Please enter your CustomerID:");
-                    customerId = userInput.nextInt();
-                    int searchKey = searchAccountHolders(accountHolders, accountHolders.size(), customerId);
-                    if (searchKey >= 0) {
-                        BankAccount addAcct = createAccount(userInput);
-                        bankAccounts.add(addAcct);
-                        //This block updates the Values for existing keys to keep track of AccountHolders with multiple accounts.
-                        if (acctdef.containsKey(customerId)) {
-                            if(acctdef.get(customerId).equals(""))
-                                acctdef.replace(customerId, String.valueOf(addAcct.getAccountNumber()));
-                            else
-                                acctdef.put(customerId, acctdef.get(customerId) + ", " + String.valueOf(addAcct.getAccountNumber()));
-                        }
-                    } else {
-                        System.out.println("Cannot find Customer with Id: " + customerId);
-                    }
-                } else if (existCustomerMenu == 2) { //Deposit
-                    initializeDeposit(bankAccounts, bankAccounts.size(), userInput);
-                } else if (existCustomerMenu == 3) { //Withdraw
-                    initializeWithdraw(bankAccounts, bankAccounts.size(), userInput);
-                } else if (existCustomerMenu == 4) { //Update Account Information
-                    updateAccountHolderInfo(accountHolders, accountHolders.size(), userInput);
-                } else if (existCustomerMenu == 5) { //Close Single Account
-                    closeBankAccount(accountHolders, bankAccounts, acctdef, bankAccounts.size(), userInput);
-                } else if (existCustomerMenu == 6) { //Close All Accounts & Delete Account Holder
-                    deleteAccountHolder(accountHolders, bankAccounts, acctdef, accountHolders.size(), userInput);
-                }
-                else
-                    printBankAccounts(acctdef,accountHolders,bankAccounts,userInput);
-            }
-            else {
-                System.out.println("Thanks for visiting Java Bank! Come again!");
-            }
-            System.out.println();
-        } while (option != 3);
+//        String firstName, lastName, street, city, state;
+//        int zip, customerId;
+//
+//        //Variable for Scanner object
+//        int option;
+//        int existCustomerMenu;
+//
+//        //Instantiate Scanner objects
+//        Scanner userInput = new Scanner(System.in);
+//
+//        // data structure for account holder
+//        ArrayList<AccountHolder> accountHolders = new ArrayList<>();
+//
+//        //Create an ArrayList of Bank Account objects
+//        ArrayList<BankAccount> bankAccounts = new ArrayList<>();
+//
+//        //Hash Map to tie AccountNumber to AccountHolder
+//        Map<Integer, String> acctdef = new TreeMap<>();
+//
+//        // create a method that will create 3 default bank account objects
+//        AccountHolder holder1 = new AccountHolder("John", "Smith", "100 North Ave", "Rio Rancho", "NM", 87124);
+//        IRA ira = new Roth(70000,"1990-10-09", 14000, holder1.getName(), 15000);
+//        accountHolders.add(holder1);
+//        bankAccounts.add(ira);
+//        acctdef.put(holder1.getCustomerId(), String.valueOf(ira.getAccountNumber()));
+//
+//
+//        AccountHolder holder2 = new AccountHolder("Alan", "Turing", "", "", "", 00000);
+//        Savings savings = new Savings(50);
+//        accountHolders.add(holder2);
+//        bankAccounts.add(savings);
+//        acctdef.put(holder2.getCustomerId(), String.valueOf(savings.getAccountNumber()));
+//
+//        AccountHolder holder3 = new AccountHolder("Bob", "Ross", "900 Painter Road", "Albuquerque", "NM",87114);
+//        BankAccount checking = new Checking(100);
+//        accountHolders.add(holder3);
+//        bankAccounts.add(checking);
+//        acctdef.put(holder3.getCustomerId(), String.valueOf(checking.getAccountNumber()));
+//
+//
+//        // write a greeting
+//        do {
+//            option = writeGreeting(userInput);
+//            System.out.println();
+//            if (option == 1) { //New Customer
+//                System.out.println("Please enter your First Name: ");
+//                firstName = userInput.nextLine();
+//                System.out.println("Please enter your Last Name: ");
+//                lastName = userInput.nextLine();
+//                System.out.println("Please enter your Street Address: ");
+//                street = userInput.nextLine();
+//                System.out.println("Please enter the city: ");
+//                city = userInput.nextLine();
+//                System.out.println("Please enter the state: ");
+//                state = userInput.nextLine();
+//                System.out.println("Please enter your zipcode: ");
+//                zip = userInput.nextInt();
+//
+//                //Creates AccountHolder based on User Entry
+//                AccountHolder newAcct = new AccountHolder(firstName, lastName, street, city, state, zip);
+//                accountHolders.add(newAcct);
+//                customerId = newAcct.getCustomerId();
+//
+//                //Creates new BankAccount
+//                BankAccount newAccount = createAccount(userInput);
+//                bankAccounts.add(newAccount);
+//
+//                System.out.println();
+//                System.out.println();
+//                System.out.println("*********************************");
+//                System.out.println("Your Customer Number is: " + customerId);
+//                System.out.println("Please keep this number in your records!");
+//                System.out.println();
+//
+//                //Ties Bank Account to Account Holder
+//                acctdef.put(newAcct.getCustomerId(), String.valueOf(newAccount.getAccountNumber()));
+//            }
+//            else if (option == 2) { //Existing Customer
+//                existCustomerMenu = bankMenu(userInput);
+//                System.out.println();
+//                if (existCustomerMenu == 1) {
+//                    //Create New Account
+//                    System.out.println("Please enter your CustomerID:");
+//                    customerId = userInput.nextInt();
+//                    int searchKey = searchAccountHolders(accountHolders, accountHolders.size(), customerId);
+//                    if (searchKey >= 0) {
+//                        BankAccount addAcct = createAccount(userInput);
+//                        bankAccounts.add(addAcct);
+//                        //This block updates the Values for existing keys to keep track of AccountHolders with multiple accounts.
+//                        if (acctdef.containsKey(customerId)) {
+//                            if(acctdef.get(customerId).equals(""))
+//                                acctdef.replace(customerId, String.valueOf(addAcct.getAccountNumber()));
+//                            else
+//                                acctdef.put(customerId, acctdef.get(customerId) + ", " + String.valueOf(addAcct.getAccountNumber()));
+//                        }
+//                    } else {
+//                        System.out.println("Cannot find Customer with Id: " + customerId);
+//                    }
+//                } else if (existCustomerMenu == 2) { //Deposit
+//                    initializeDeposit(bankAccounts, bankAccounts.size(), userInput);
+//                } else if (existCustomerMenu == 3) { //Withdraw
+//                    initializeWithdraw(bankAccounts, bankAccounts.size(), userInput);
+//                } else if (existCustomerMenu == 4) { //Update Account Information
+//                    updateAccountHolderInfo(accountHolders, accountHolders.size(), userInput);
+//                } else if (existCustomerMenu == 5) { //Close Single Account
+//                    closeBankAccount(accountHolders, bankAccounts, acctdef, bankAccounts.size(), userInput);
+//                } else if (existCustomerMenu == 6) { //Close All Accounts & Delete Account Holder
+//                    deleteAccountHolder(accountHolders, bankAccounts, acctdef, accountHolders.size(), userInput);
+//                }
+//                else
+//                    printBankAccounts(acctdef,accountHolders,bankAccounts,userInput);
+//            }
+//            else {
+//                System.out.println("Thanks for visiting Java Bank! Come again!");
+//            }
+//            System.out.println();
+//        } while (option != 3);
 
     } //End of Main Program
 
@@ -233,6 +237,28 @@ public class Main {
         System.out.println("What type of Savings Account would you like to open today?");
         System.out.println("1. Standard Savings");
         System.out.println("2. HighYield");
+        System.out.println();
+        System.out.println("See account differences below to guide your selection.");
+
+        //Create Array list to display Different Types of Savings Accounts.
+        ArrayList<String> savingsAccountInfo = new ArrayList<>();
+        savingsAccountInfo.add("Standard Savings Account Info");
+        savingsAccountInfo.add("$50 minimum deposit");
+        savingsAccountInfo.add("0.15% Annual Percentage Yield");
+        savingsAccountInfo.add("Monthly withdrawal/transfer limit is 9 per month");
+        savingsAccountInfo.add("$5.00 withdrawal fee");
+        savingsAccountInfo.add("");
+        savingsAccountInfo.add("High Yield Savings Account Info");
+        savingsAccountInfo.add("$500 minimum deposit");
+        savingsAccountInfo.add("0.40% Annual Percentage Yield");
+        savingsAccountInfo.add("Monthly withdrawal/transfer limit is 5 per month");
+        savingsAccountInfo.add("$5.00 withdrawal fee");
+        savingsAccountInfo.add("");
+
+        //Print Information on Savings Account
+        for (int i = 0; i < savingsAccountInfo.size(); i++) {
+            System.out.println(savingsAccountInfo.get(i));
+        }
 
         do {
             System.out.println("Select option from menu above...");
@@ -340,7 +366,7 @@ public class Main {
             int suboption = iraAccountMenu(userInput);
             if (suboption == 1) {
                 //Traditional
-                System.out.println("Please Enter your First Name: ");
+                System.out.println("Please Enter your Full Name: ");
                 name = in.nextLine();
                 System.out.println("Please Enter your birthdate (yyyy-mm-dd): ");
                 birthdate = in.nextLine();
@@ -620,7 +646,7 @@ public class Main {
 
                 //Notify use that Account has been closed
                 System.out.println("Account Number: " + accountNumber + " has been closed.");
-                bankAccounts.remove(searchKey);
+                bankAccounts.remove(searchKey2);
 
                 //Update AccountHolder to BankAccount Association in the HashMap
                 acctDef.put(customerId, updatedAccountNum.substring(1, updatedAccountNum.length()-1));
