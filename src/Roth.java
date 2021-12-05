@@ -2,32 +2,36 @@ public class Roth extends IRA{
 
     private int grossIncome;
 
-    public Roth(int grossIncome, String birthDate, double taxIncomeAmt, String accountHolder, double initialDeposit)
+    public Roth(){}
+
+    public Roth(int grossIncome, String birthDate, double taxIncomeAmt,double initialDeposit,int holderID)
     {
-        super(birthDate,taxIncomeAmt,accountHolder, initialDeposit);
+        super(birthDate,taxIncomeAmt,initialDeposit,holderID);
         this.grossIncome = grossIncome;
     }
 
+    public void setGrossIncome(int income) { this.grossIncome = income;}
+
+    public int getGrossIncome(){return grossIncome;}
+
     public void deposit(double amount)
     {
-        if(!contributionCheck(amount)) {
+        if(!contributionCheck(amount))
             balance += amount;
-            System.out.printf("You've deposited: $%.2f%n", amount);
-            System.out.printf("Your new balance is: $%.2f%n", balance);
-        }
         else
             System.out.println("You have contributed your max contributions for the year!");
     }
 
     public void withdraw(double amount)
     {
-        if(balance > 0) {
-            balance = balance - amount;
-            System.out.printf("Withdrawal Amount: $%.2f%n", amount);
-            System.out.printf("Your Account balance: $%.2f%n", balance);
-        }
+        if(balance > 0)
+            withdraw(amount);
         else
             System.out.println("Insufficent funds!");
+    }
+
+    public String toString() {
+        return super.toString();
     }
 
 }

@@ -1,25 +1,39 @@
 public abstract class BankAccount
 {
     //Bank Account Variables
-    protected String accountHolder;
-    private static int lastAccountNum = 1000;
+    private static int lastAccountNum = 1003;
     protected int accountNumber;
     protected double balance;
+    protected int holderID;
+
+    public BankAccount(int holderID) {
+        lastAccountNum++;
+        this.accountNumber = lastAccountNum;
+        this.holderID = holderID;
+    }
 
     //Default Constructor Method
-    public BankAccount() {
+    public BankAccount()
+    {
         lastAccountNum++;
         this.accountNumber = lastAccountNum;
     }
 
-    /*    
-    //Alterate Bank Account Constructor
-    public BankAccount(double initialDeposit) {
-        lastAccountNum++;
-        this.accountNumber = lastAccountNum;
-        balance = initialDeposit;
+    public void setHolderID(int holderID) {
+        this.holderID = holderID;
     }
-    */
+
+    public int getHolderID() {
+        return holderID;
+    }
+
+    public void setBalance(double balance) {
+        this.balance = balance;
+    }
+
+    public void setAccountNumber(int accountNumber) {
+        this.accountNumber = accountNumber;
+    }
 
     public double getBalance()
     {

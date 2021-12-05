@@ -8,14 +8,10 @@ public class Checking extends BankAccount {
 	private static final double transactionFee = 1.00;
 	protected int accountNum;
 	
-	public Checking() {
-		super();
-		System.out.println("\nCongratulations on your new Account!!");
-		System.out.println(toString());
-	}
+	public Checking() {}
 
-	public Checking(double initialDeposit) {
-		super();
+	public Checking(double initialDeposit,int holderID) {
+		super(holderID);
 		balance += initialDeposit;
 		System.out.println("\nCongratulations on your new Account!!");
 		System.out.println(toString());

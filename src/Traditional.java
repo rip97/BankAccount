@@ -7,9 +7,11 @@ public class Traditional extends IRA{
     private double requiredAge;
     private double minDistributuion;
 
-    public Traditional(String birthDate, double taxIncomeAmt, String accountHolder, double initialDeposit)
+    public Traditional() {}
+
+    public Traditional(String birthDate, double taxIncomeAmt, double initialDeposit,int holderID)
     {
-        super(birthDate,taxIncomeAmt,accountHolder, initialDeposit);
+        super(birthDate,taxIncomeAmt, initialDeposit,holderID);
 
     }
 
@@ -35,7 +37,11 @@ public class Traditional extends IRA{
                 System.out.printf("Your Account balance: $%.2f%n", balance);
             }
             else
-                balance = balance -amount;
+            {
+                balance = balance - amount;
+                System.out.printf("Withdrawal Amount: $%.2f%n", amount);
+                System.out.printf("Your Account balance: $%.2f%n", balance);
+            }
         }
         else
             System.out.println("Insufficent funds!");
@@ -70,5 +76,9 @@ public class Traditional extends IRA{
 
         return balance / distPrdVal;
 
+    }
+
+    public String toString() {
+        return super.toString();
     }
 }

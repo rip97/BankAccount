@@ -7,15 +7,10 @@ public class Savings extends BankAccount{
   private static final int WithdrawalFee = 5;
 
 
-  public Savings() {
-    super();
-    System.out.println("\n Congratulations on your new Savings Account!!");
-    System.out.println(toString());
-  }
+  public Savings() {}
 
-  public Savings(double initialDeposit) {
-    //super(initialDeposit);
-    super();
+  public Savings(double initialDeposit,int holderID) {
+    super(holderID);
 
     if(initialDeposit < MinimumDeposit)
     {

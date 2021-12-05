@@ -7,26 +7,21 @@ public class HighYield extends Savings{
     private static final int WithdrawalFee = 5;
 
 
-    public HighYield() {
-        super();
-    }
+    public HighYield() {}
 
-    public HighYield(double initialDeposit) {
-        super();
-
-        if(initialDeposit < MinimumDeposit)
+    public HighYield(double initialDeposit, int holderID) {
+        super(initialDeposit, holderID);
+        /*if(initialDeposit < MinimumDeposit)
         {
             System.out.println("\n The minimum deposit is $500.00, please try again!");
 
         }
         else
         {
-            balance += initialDeposit;
             System.out.println("\nCongratulations on your new Account!!");
             System.out.println(toString());
-        }
+        }*/
     }
-
 
     public void withdrawlimit(int NumofWithdrawals){
         if(WithdrawalLimit >= NumofWithdrawals)

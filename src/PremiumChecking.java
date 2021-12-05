@@ -8,12 +8,10 @@ class PremiumChecking extends Checking {
 	private static final double withdrawalLimit = 500.00;
 	private static final double transactionFee = 0.00;
 
-	public PremiumChecking() {
-		super();
-	}
+	public PremiumChecking() {}
 
-	public PremiumChecking(double initialDeposit) {
-		super(initialDeposit);
+	public PremiumChecking(double initialDeposit,int holderID) {
+		super(initialDeposit,holderID);
 	}
 
 	public double getTransactionFee() {
