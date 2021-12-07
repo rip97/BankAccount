@@ -46,6 +46,7 @@ public class AccountHolder
     {
         this.customerId = id;
     }
+
     public void setFirstName(String n)
     {
         this.firstName = n;
@@ -60,14 +61,17 @@ public class AccountHolder
     {
         this.street = n;
     }
+
     public void setCity(String n)
     {
         this.city = n;
     }
+
     public void setState(String n)
     {
         this.state = n;
     }
+
     public void setZip(int zip)
     {
         this.zip = zip;

@@ -6,6 +6,12 @@ public class Main {
 
     public static void main(String[] args) {
 
+        /*
+            1. update reporting methods
+            2. figure the map setting of the holderID to many bankIDs -> search methods
+            3. deletion metion
+
+         */
 
         //Variables
         DBAccount dbAccount = new DBAccount("AccountHolders.csv");
@@ -28,13 +34,15 @@ public class Main {
         ArrayList<BankAccount> bankAccounts = new ArrayList<>();
 
         //Hash Map to tie AccountNumber to AccountHolder
+        //map: holderID, [array of bank accounts with holderID]
         Map<Integer, ArrayList<BankAccount>> acctdef = new TreeMap<>();
 
         // read data from accounts
-
         dbAccount.read(accountHolders);
         bank.read(bankAccounts);
 
+        //  ties account holder with thier assicoated bank accounts
+        tieAccounts(accountHolders, bankAccounts, acctdef);
 
         // write a greeting
         do {
@@ -63,6 +71,9 @@ public class Main {
                 BankAccount newAccount = createAccount(userInput, newAcct);
                 bank.create(newAccount);
 
+                // update lists
+                dbAccount.read(accountHolders);
+                bank.read(bankAccounts);
 
                 System.out.println();
                 System.out.println();
@@ -72,7 +83,11 @@ public class Main {
                 System.out.println();
 
                 //Ties Bank Account to Account Holder
+                tieAccounts(accountHolders, bankAccounts, acctdef);
 
+                // for loop to get accoundHolder ID's
+                // method call to search the bank accounts and then return the bank account if acccountHolderIDs match
+                // place into hash map
 
             } else if (option == 2) { //Existing Customer
                 existCustomerMenu = bankMenu(userInput);
@@ -81,7 +96,7 @@ public class Main {
                     //Create New Account
                     System.out.println("Please enter your CustomerID:");
                     customerId = userInput.nextInt();
-                    AccountHolder accountHolder = searchAccountHolders(accountHolders, accountHolders.size(), customerId);
+                    AccountHolder accountHolder = searchAccountHolders(accountHolders,customerId);
                     if (accountHolder != null) {
                         BankAccount addAcct = createAccount(userInput, accountHolder);
                         bank.create(addAcct);
@@ -98,13 +113,16 @@ public class Main {
                 } else if (existCustomerMenu == 4) { //Update Account Information
                     updateAccountHolderInfo(accountHolders, accountHolders.size(), userInput, dbAccount);
                 }
-                /*} else if (existCustomerMenu == 5) { //Close Single Account
+                 else if (existCustomerMenu == 5) { //Close Single Account
 
                 } else if (existCustomerMenu == 6) { //Close All Accounts & Delete Account Holder
 
-                } else*/
-                // printBankAccounts(acctdef, accountHolders, bankAccounts, userInput);
-            } else {
+                }
+                 else
+                    printBankAccounts(acctdef, accountHolders, bankAccounts, userInput);
+            }
+            else
+            {
                 System.out.println("Thanks for visiting Java Bank! Come again!");
             }
             System.out.println();
@@ -264,6 +282,13 @@ public class Main {
         return option;
     }
 
+    // updates the tree map
+    public static void tieAccounts(ArrayList<AccountHolder> accountHolders, ArrayList<BankAccount> bankAccounts, Map<Integer, ArrayList<BankAccount>> acctDef) {
+        for (AccountHolder holder : accountHolders) {
+            ArrayList<BankAccount> tiedAccounts = searchBankAccountMap(bankAccounts, holder.getCustomerId());
+            acctDef.put(holder.getCustomerId(), tiedAccounts);
+        }
+    }
 
     /// Creates the account based on what the user selects (Checking, Savings, or IRA).
     public static BankAccount createAccount(Scanner userInput, AccountHolder accountHolder) {
@@ -376,24 +401,24 @@ public class Main {
     }
 
     // Search Bank Account method, returns the account
-    public static BankAccount searchBankAccounts(ArrayList<BankAccount> bankAccounts, int count, int accountNumber) {
-        for (int i = 0; i < count; i++) {
-            if (bankAccounts.get(i).getAccountNumber() == accountNumber) {
-                return bankAccounts.get(i);
+    public static BankAccount searchBankAccounts(ArrayList<BankAccount> bankAccounts, int accountNumber) {
+        for (BankAccount bankAccount: bankAccounts) {
+            if (bankAccount.getAccountNumber()== accountNumber) {
+                return bankAccount;
             }
         }
         return null;
     }
 
 
-    // Search Bank Account method, returns toString of account
-    public static String searchBankAccounts(ArrayList<BankAccount> bankAccounts, int acctNumber) {
-        for (int i = 0; i < bankAccounts.size(); i++) {
-            if (bankAccounts.get(i).getAccountNumber() == acctNumber)
-                return bankAccounts.get(i).toString();
-
+    // Search Bank Account method, returns array of bank accounts
+    public static ArrayList<BankAccount> searchBankAccountMap(ArrayList<BankAccount> bankAccounts, int holderID) {
+        ArrayList<BankAccount> tiedAccounts = new ArrayList<>();
+        for (BankAccount bankAccount : bankAccounts) {
+            if (bankAccount.getHolderID() == holderID)
+                tiedAccounts.add(bankAccount);
         }
-        return "Account Not Found";
+        return tiedAccounts;
     }
 
     /*
@@ -404,7 +429,7 @@ public class Main {
         System.out.println("Please enter your account number: ");
         int accountNumber = userInput.nextInt();
 
-        BankAccount account = searchBankAccounts(bankAccounts, count, accountNumber);
+        BankAccount account = searchBankAccounts(bankAccounts,accountNumber);
 
         if (account != null) {
             System.out.println("Enter the amount you would like to deposit: ");
@@ -427,7 +452,7 @@ public class Main {
         System.out.println("Please enter your account number: ");
         int accountNumber = userInput.nextInt();
 
-        BankAccount account = searchBankAccounts(bankAccounts, count, accountNumber);
+        BankAccount account = searchBankAccounts(bankAccounts,accountNumber);
 
         if (account != null) {
             if (account instanceof Traditional) {
@@ -455,10 +480,10 @@ public class Main {
     /*
      * Search Account Holders method
      */
-    public static AccountHolder searchAccountHolders(ArrayList<AccountHolder> accountHolders, int count, int customerId) {
-        for (int i = 0; i < count; i++) {
-            if (accountHolders.get(i).getCustomerId() == customerId) {
-                return accountHolders.get(i);
+    public static AccountHolder searchAccountHolders(ArrayList<AccountHolder> accountHolders, int customerId) {
+        for (AccountHolder holder: accountHolders) {
+            if (holder.getCustomerId() == customerId) {
+                return holder;
             }
         }
         return null;
@@ -495,7 +520,7 @@ public class Main {
         if (option == 1) { //Update AccountHolder Name
             System.out.println("Please enter your CustomerID:");
             customerId = userInput.nextInt();
-            AccountHolder accountHolder = searchAccountHolders(accountHolders, count, customerId);
+            AccountHolder accountHolder = searchAccountHolders(accountHolders,customerId);
             if (accountHolder != null) {
                 System.out.println("Please enter your First Name: ");
                 String firstName = in.nextLine();
@@ -506,6 +531,7 @@ public class Main {
                 accountHolder.setLastName(lastName);
 
                 conn.update(customerId, accountHolder);
+                conn.read(accountHolders);
 
                 System.out.println("SUCCESS! Your account has been updated!");
                 System.out.println(accountHolder.toString());
@@ -517,7 +543,7 @@ public class Main {
             //Update AccountHolder Address
             System.out.println("Please enter your CustomerID:");
             customerId = userInput.nextInt();
-            AccountHolder accountHolder = searchAccountHolders(accountHolders, count, customerId);
+            AccountHolder accountHolder = searchAccountHolders(accountHolders,customerId);
             if (accountHolder != null) {
                 System.out.println("Please enter the Street Name: ");
                 String street = in.nextLine();
@@ -534,6 +560,7 @@ public class Main {
                 accountHolder.setZip(zip);
 
                 conn.update(customerId, accountHolder);
+                conn.read(accountHolders);
                 System.out.println("SUCCESS! Your account has been updated!");
                 System.out.println(accountHolder.toString());
 
@@ -542,48 +569,43 @@ public class Main {
             }
         }
     }
-}
 
 
-    /*public static void printBankAccounts(Map<Integer, ArrayList<BankAccount>> acctTie, ArrayList<AccountHolder> holders, ArrayList<BankAccount> accounts,Scanner userInput) {
+
+    public static void printBankAccounts(Map<Integer, ArrayList<BankAccount>> acctTie, ArrayList<AccountHolder> holders, ArrayList<BankAccount> accounts,Scanner userInput) {
+
         // ask user for input
         System.out.println("Please enter your account holder id: ");
         int userId = userInput.nextInt();
 
-        // print account holder info
-        for (AccountHolder accountHolder: holders)
-        {
-            if(userId == accountHolder.getCustomerId()) {
-                System.out.println(accountHolder.toString());
-                break;
+        AccountHolder holder = searchAccountHolders(holders, userId);
+        if (holder != null) {
+
+            System.out.println(holder.toString());
+
+            int numOfAccounts = -1;
+            if (acctTie.get(holder.getCustomerId()).isEmpty()) {
+                numOfAccounts = 0;
+                System.out.printf("%s %s, you have %d accounts with the Java Bank.", holder.getFirstName(), holder.getLastName(), numOfAccounts);
             }
-        }
+            else
+            {
+                numOfAccounts = acctTie.get(holder.getCustomerId()).size();
+                System.out.printf("%s %s, you have %d account(s) with the Java Bank. They are listed below:\n", holder.getFirstName(), holder.getLastName(), numOfAccounts);
+                for (BankAccount account: acctTie.get(holder.getCustomerId())) {
 
-        int numOfAccounts = -1;
-        if(acctTie.get(userId).equals(""))
-        {
-            numOfAccounts = 0;
-            System.out.printf("%s, you have %d accounts with the Java Bank.", holders.get(holderIndex).getName(), numOfAccounts);
-        }
-        else {
-
-            String[] accountNums = acctTie.get(userId).split(", ");
-            numOfAccounts = accountNums.length;
-            System.out.printf("%s, you have %d account(s) with the Java Bank. They are listed below:\n", holders.get(holderIndex).getName(), numOfAccounts);
-            for (int i = 0; i < accountNums.length; i++) {
-                String num = accountNums[i];
-                int actNum = Integer.parseInt(num);
-                System.out.println(searchBankAccounts(accounts, actNum));
+                    System.out.println(account.toString());
+                }
             }
         }
     }
-}*/
+
 
     /*
      * Search Array for Bank Account Closure
      * Returns the Index of found value
      * Parameters is array and value to be searched for
-    *//*
+     *//*
     public static int findIndex(List<String> accountNums, int count, int accountNum) {
         for (int i = 0; i < count; i++) {
             if (accountNums.contains(String.valueOf(accountNum))) {
@@ -593,27 +615,41 @@ public class Main {
         return -1;
     }
 
-    *//*
-     * Close Bank Account Holders prompt
-    *//*
-    public static void closeBankAccount(ArrayList<AccountHolder> accountHolders, ArrayList<BankAccount> bankAccounts, Map<Integer, String> acctDef, int count, Scanner userInput) {
+    /*
+    Close Bank
+    Account Holders
+    prompt
+    */
+
+    public static void closeBankAccount(ArrayList<AccountHolder> accountHolders, ArrayList<BankAccount> bankAccounts, Map<Integer, ArrayList<BankAccount>> acctDef, int count, Scanner userInput, DBBankAcct bankAcct) {
         System.out.println("Please enter your CustomerId: ");
         int customerId = userInput.nextInt();
 
-        int searchKey = searchAccountHolders(accountHolders, count, customerId);
+        AccountHolder holder = searchAccountHolders(accountHolders,customerId);
 
-        if (searchKey >= 0) {
+        if (holder != null) {
             System.out.println("Please enter the account number you would like to close: ");
             int accountNumber = userInput.nextInt();
 
-            int searchKey2 = searchBankAccounts(bankAccounts, count, accountNumber);
+            BankAccount account = searchBankAccounts(bankAccounts,accountNumber);
 
-            if (searchKey2 >= 0) {
+            if (account != null) {
+                // remove account from data file
+                bankAcct.delete(account.getAccountNumber());
+                bankAcct.read(bankAccounts);
+
+                //  ties account holder with thier assicoated bank accounts
+                tieAccounts(accountHolders, bankAccounts, acctDef);
+
+                //Notify use that Account has been closed
+                System.out.println("Account Number: " + accountNumber + " has been closed.");
+
+
                 //This block creates another String Array to split Values from HashMap linked to AccountHolderID
-                String [] acctDefValue = acctDef.get(customerId).split(",");
+                //String[] acctDefValue = acctDef.get(customerId).split(",");
 
-                //Create another array to trim whitespace around the values in the array
-                String [] trimmedAcctNums = new String [acctDefValue.length];
+                /*//Create another array to trim whitespace around the values in the array
+                String[] trimmedAcctNums = new String[acctDefValue.length];
                 for (int i = 0; i < acctDefValue.length; i++) {
                     trimmedAcctNums[i] = acctDefValue[i].trim();
                 }
@@ -632,59 +668,80 @@ public class Main {
                 bankAccounts.remove(searchKey2);
 
                 //Update AccountHolder to BankAccount Association in the HashMap
-                acctDef.put(customerId, updatedAccountNum.substring(1, updatedAccountNum.length()-1));
-            }
-            else {
+                acctDef.put(customerId, updatedAccountNum.substring(1, updatedAccountNum.length() - 1));*/
+            } else {
                 //System.out.println("That Account Number is not associated with this Account Holder.");
                 System.out.println("Cannot find account with that account number. AcctNo: " + accountNumber);
             }
-        }
-        else {
+        } else {
             System.out.println("Cannot find Customer with Id: " + customerId);
         }
     }
 
-    *//*
+    /*
      * Delete Account Holders + Associated Bank Accounts
-    *//*
-    public static void deleteAccountHolder(ArrayList<AccountHolder> accountHolders, ArrayList<BankAccount> bankAccounts, Map<Integer, String> acctDef, int count, Scanner userInput) {
+     */
+    public static void deleteAccountHolder(ArrayList<AccountHolder> accountHolders, ArrayList<BankAccount> bankAccounts, Map<Integer, ArrayList<BankAccount>> acctDef, int count, Scanner userInput, DBAccount conn, DBBankAcct bankAcct) {
         System.out.println("Please enter your CustomerId: ");
         int customerId = userInput.nextInt();
 
-        int searchKey = searchAccountHolders(accountHolders, count, customerId);
+        AccountHolder holder = searchAccountHolders(accountHolders,customerId);
 
-        if (searchKey >= 0) {
-            //Pulls account holder name
-            String accountPerson = accountHolders.get(searchKey).getName();
+       if (holder != null)
+       {
+           //  remove bank accounts from BankAccounts.csv
+           ArrayList<BankAccount> accounts = acctDef.get(holder.getCustomerId());
+           StringBuilder acctNumbers = new StringBuilder();
+           for(BankAccount account: accounts)
+           {
+               acctNumbers.append(account.getAccountNumber());
+               acctNumbers.append(",");
+               bankAcct.delete(account.getAccountNumber());
+           }
 
-            //This block creates another String Array to split Values from HashMap linked to AccountHolderID
-            String [] acctDefValue = acctDef.get(customerId).split(",");
+           // remove account holder from CSV file and tree map
+           acctDef.remove(holder.getCustomerId());
+           conn.delete(holder.getCustomerId());
 
-            //Create another array to trim whitespace around the values in the array
-            String [] trimmedAcctNums = new String [acctDefValue.length];
-            for (int i = 0; i < acctDefValue.length; i++) {
-                trimmedAcctNums[i] = acctDefValue[i].trim();
-            }
+           bankAcct.read(bankAccounts);
+           conn.read(accountHolders);
 
-            //Notify the User which their account has been closed and what their account numbers were.
-            System.out.println("Account has been closed for: " + accountPerson);
-            System.out.print("Associated Account Numbers: " + acctDef.get(customerId));
+           System.out.println("Account has been closed for: " + holder.getFirstName() + " " + holder.getLastName());
+           System.out.print("Associated Account Numbers: " + acctNumbers.toString());
 
-            //Remove Accounts from BankAccounts ArrayList
-            for (int i = 0; i < trimmedAcctNums.length; i++) {
-                int searchaccountNum = searchBankAccounts(bankAccounts, bankAccounts.size(), Integer.parseInt(trimmedAcctNums[i]));
-                bankAccounts.remove(searchaccountNum);
-            }
 
-            //Delete AccountHolder to BankAccount Association in the HashMap
-            acctDef.remove(accountHolders.get(searchKey).getCustomerId());
-
-            //Remove the AccountHolder from the AccountHolder ArrayList
-            accountHolders.remove(searchKey);
+//            //Pulls account holder name
+//            String accountPerson = accountHolders.get(searchKey).getName();
+//
+//            //This block creates another String Array to split Values from HashMap linked to AccountHolderID
+//            String[] acctDefValue = acctDef.get(customerId).split(",");
+//
+//            //Create another array to trim whitespace around the values in the array
+//            String[] trimmedAcctNums = new String[acctDefValue.length];
+//            for (int i = 0; i < acctDefValue.length; i++) {
+//                trimmedAcctNums[i] = acctDefValue[i].trim();
+//            }
+//
+//            //Notify the User which their account has been closed and what their account numbers were.
+//            System.out.println("Account has been closed for: " + accountPerson);
+//            System.out.print("Associated Account Numbers: " + acctDef.get(customerId));
+//
+//            //Remove Accounts from BankAccounts ArrayList
+//            for (int i = 0; i < trimmedAcctNums.length; i++) {
+//                int searchaccountNum = searchBankAccounts(bankAccounts, bankAccounts.size(), Integer.parseInt(trimmedAcctNums[i]));
+//                bankAccounts.remove(searchaccountNum);
+//            }
+//
+//            //Delete AccountHolder to BankAccount Association in the HashMap
+//            acctDef.remove(accountHolders.get(searchKey).getCustomerId());
+//
+//            //Remove the AccountHolder from the AccountHolder ArrayList
+//            accountHolders.remove(searchKey);
         }
-        else {
+        else
+        {
             System.out.println("Cannot find Customer with Id: " + customerId);
         }
-    }     */
+    }
 
- //END OF MAIN CLASS*/
+}//END OF MAIN CLASS*/
