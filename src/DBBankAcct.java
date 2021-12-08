@@ -44,17 +44,18 @@ public class DBBankAcct {
                         account = new Traditional();
 
                     account.setAccountNumber(Integer.parseInt(cols[0]));
+                    account.setHolderID(Integer.parseInt(cols[1]));
                     account.setBalance(Double.parseDouble(cols[2]));
 
                     if(account instanceof Roth)
                     {
 
-                        ((Roth) account).setGrossIncome(Integer.parseInt(cols[5]));
+                        ((Roth) account).setGrossIncome(Integer.parseInt(cols[6]));
                     }
                     if(account instanceof IRA)
                     {
                         ((IRA) account).setBirthDate(cols[4]);
-                        ((IRA) account).setTaxIncomeAmt(Double.parseDouble(cols[6]));
+                        ((IRA) account).setTaxIncomeAmt(Double.parseDouble(cols[5]));
                     }
 
                     bankActs.add(account);
@@ -95,17 +96,18 @@ public class DBBankAcct {
                         account = new Traditional();
 
                     account.setAccountNumber(Integer.parseInt(cols[0]));
+                    account.setHolderID(Integer.parseInt(cols[1]));
                     account.setBalance(Double.parseDouble(cols[2]));
 
                     if(account instanceof Roth)
                     {
 
-                        ((Roth) account).setGrossIncome(Integer.parseInt(cols[5]));
+                        ((Roth) account).setGrossIncome(Integer.parseInt(cols[6]));
                     }
                     if(account instanceof Traditional)
                     {
                         ((IRA) account).setBirthDate(cols[4]);
-                        ((IRA) account).setTaxIncomeAmt(Double.parseDouble(cols[6]));
+                        ((IRA) account).setTaxIncomeAmt(Double.parseDouble(cols[5]));
                     }
 
                     bankActs.add(account);
@@ -201,14 +203,20 @@ public class DBBankAcct {
                 if(!(account instanceof IRA))
                 {
                     String newLine = String.format("%d,%d,%f,", account.getAccountNumber(),account.getHolderID(),account.getBalance());
-                    if(account instanceof Checking)
+                    if(!(account instanceof PremiumChecking) && !(account instanceof Savings))
+                    {
+                        // marking checking account
                         newLine = newLine + "c";
-                    if(account instanceof PremiumChecking)
-                        newLine = newLine + "pc";
-                    if(account instanceof Savings)
+                    }
+                    else if(!(account instanceof HighYield) && !(account instanceof Checking))
+                    {
+                        // mark savings
                         newLine = newLine + "s";
-                    if(account instanceof HighYield)
+                    }
+                    else if (account instanceof HighYield)
                         newLine = newLine + "hy";
+                    else
+                        newLine = newLine + "pc";
 
                     csvWriter.write(newLine);
                 }

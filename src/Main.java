@@ -6,13 +6,6 @@ public class Main {
 
     public static void main(String[] args) {
 
-        /*
-            1. update reporting methods
-            2. figure the map setting of the holderID to many bankIDs -> search methods
-            3. deletion metion
-
-         */
-
         //Variables
         DBAccount dbAccount = new DBAccount("AccountHolders.csv");
         DBBankAcct bank = new DBBankAcct("BankAccounts.csv");

@@ -15,8 +15,11 @@ public abstract class BankAccount
     //Default Constructor Method
     public BankAccount()
     {
+        /*
         lastAccountNum++;
         this.accountNumber = lastAccountNum;
+
+         */
     }
 
     public void setHolderID(int holderID) {
